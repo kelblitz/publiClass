@@ -1,0 +1,63 @@
+﻿public class Cliente
+{
+    public string TipoDocumento { get; set; } // Pode ser "CPF" ou "CNPJ"
+    public string NomeFantasia { get; set; }
+    public decimal CapitalSocial { get; set; }
+    public DateTime DataConstituicao { get; set; }
+    public string NomeMae { get; set; }
+    public short NumeroAgencia { get; set; }
+    public DateTime DataAberturaCadastro { get; private set; }
+
+
+    public Cliente()
+    {
+        DataAberturaCadastro = DateTime.Today; // Define a data de abertura no momento da criação do objeto
+    }
+
+
+    public bool Validar()
+    {
+        if (DataAberturaCadastro != DateTime.Today) 
+        { throw new RegraNegocioException("nr3"); }
+        
+        if (TipoDocumento == "CNPJ")
+        {
+            if ((string.IsNullOrEmpty(NomeFantasia)) || (CapitalSocial <= 0) || (DataConstituicao == default(DateTime)) || (!string.IsNullOrEmpty(NomeMae)))
+            {
+                throw new Exception("rn04");
+            }
+            else if (TipoDocumento == "CPF")
+        {
+            if (string.IsNullOrEmpty(NomeMae) || NomeMae.Length < 3 ||!string.IsNullOrEmpty(NomeFantasia) || CapitalSocial > 0 || DataConstituicao != default(DateTime))
+            {
+                throw new Exception("rn04");
+            }
+
+
+           
+        }
+
+
+        if (NomeFantasia.Length < 2) 
+        { throw new RegraNegocioException("Nome Fantasia deve ter no mínimo duas letras para clientes com CNPJ."); }
+
+
+        if(TipoDocumento == "CNPJ" && DataConstituicao > DateTime.Today){
+           throw new Exception("rn06");
+        }
+        if(TipoDocumento == "CNPJ" && CapitalSocial > 0){
+           throw new Exception("rn07");
+        }
+        if(TipoDocumento == "Cpf" && NomeMae.Split(' ').Length < 2
+        ){
+           throw new Exception("rn08");
+        }
+        if (NumeroAgencia < 1000)
+        {
+            throw new Exception("rn09");
+        }
+
+
+        return true;
+    }
+}
